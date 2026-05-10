@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Manager Pro</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+<nav class="sidebar">
+
+<div class="logo">
+<div class="logo-box">Ar</div>
+<span>Finance Pro</span>
+</div>
+
+<ul class="nav-links">
+<li class="active" data-page="dashboard">🏠 Tableau de bord</li>
+<li data-page="budget">💰 Budget</li>
+<li data-page="avenir">📅 À venir</li>
+<li data-page="objectifs">🎯 Objectifs</li>
+<li data-page="historique">📜 Historique</li>
+<li data-page="parametres">⚙️ Paramètres</li>
+</ul>
+
+</nav>
+
+<main class="main-content">
+
+<section id="dashboard" class="page-view active">
+
+<div class="header-flex">
+<h1>Bonjour 👋</h1>
+<p>Aperçu global de vos finances</p>
+</div>
+
+<div class="kpi-grid">
+
+<div class="card kpi">
+<span class="label">SOLDE ACTUEL</span>
+<div class="amount" id="total-balance">0 Ar</div>
+</div>
+
+<div class="card kpi">
+<span class="label">REVENUS</span>
+<div class="amount income" id="total-income">0 Ar</div>
+</div>
+
+<div class="card kpi">
+<span class="label">DÉPENSES</span>
+<div class="amount expense" id="total-expense">0 Ar</div>
+</div>
+
+</div>
+
+<div class="dashboard-grid">
+
+<div class="card chart-section">
+<h3>Répartition des dépenses</h3>
+<canvas id="expenseChart"></canvas>
+</div>
+
+<div class="card">
+
+<h3>Objectifs</h3>
+
+<div id="goals-container-dashboard"></div>
+
+<hr>
+
+<h3>Charges à venir</h3>
+
+<div id="dashboard-future-preview"></div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="budget" class="page-view">
+
+<h1>Budget & Transactions</h1>
+
+<div class="card">
+
+<form id="trans-form" class="input-grid">
+
+<input type="text" id="t-label" placeholder="Libellé" required>
+
+<input type="number" id="t-amount" placeholder="Montant" required>
+
+<select id="t-type">
+<option value="depense">Dépense</option>
+<option value="revenu">Revenu</option>
+</select>
+
+<select id="t-category-select"></select>
+
+<button type="submit" class="btn-primary">
+Ajouter
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>DATE</th>
+<th>LIBELLÉ</th>
+<th>CATÉGORIE</th>
+<th>MONTANT</th>
+<th>ACTION</th>
+</tr>
+</thead>
+
+<tbody id="budget-body"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section id="avenir" class="page-view">
+
+<h1>Charges à venir</h1>
+
+<div class="card">
+
+<form id="future-form" class="input-grid">
+
+<input type="text" id="f-label" placeholder="Nom" required>
+
+<input type="number" id="f-amount" placeholder="Montant" required>
+
+<select id="f-category-select"></select>
+
+<input type="date" id="f-date" required>
+
+<button type="submit" class="btn-primary">
+Ajouter
+</button>
+
+</form>
+
+</div>
+
+<div class="timeline" id="future-list"></div>
+
+</section>
+
+<section id="objectifs" class="page-view">
+
+<h1>Objectifs d'Épargne</h1>
+
+<div class="card">
+
+<form id="goal-form" class="input-grid">
+
+<input type="text" id="g-name" placeholder="Nom" required>
+
+<input type="number" id="g-target" placeholder="Montant cible" required>
+
+<button type="submit" class="btn-primary">
+Créer
+</button>
+
+</form>
+
+</div>
+
+<div id="goals-list-full" class="goals-grid"></div>
+
+</section>
+
+<section id="historique" class="page-view">
+
+<div class="header-history">
+
+<div>
+<h1>Historique</h1>
+<p>Consultez vos opérations</p>
+</div>
+
+<button onclick="exportToCSV()" class="btn-primary export-btn">
+📥 Export CSV
+</button>
+
+</div>
+
+<div class="card">
+
+<div class="input-grid">
+
+<input type="month" id="filter-month" onchange="applyHistoryFilters()">
+
+<select id="filter-category" onchange="applyHistoryFilters()">
+<option value="all">Toutes</option>
+</select>
+
+<input type="text" id="filter-search" placeholder="Recherche..." onkeyup="applyHistoryFilters()">
+
+</div>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>DATE</th>
+<th>LIBELLÉ</th>
+<th>CATÉGORIE</th>
+<th>MONTANT</th>
+</tr>
+</thead>
+
+<tbody id="history-table-body"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section id="parametres" class="page-view">
+
+<h1>Catégories</h1>
+
+<div class="card">
+
+<form id="cat-form" class="input-grid">
+
+<input type="text" id="new-cat-name" placeholder="Nouvelle catégorie" required>
+
+<button type="submit" class="btn-primary">
+
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<ul id="cat-list" class="cat-list"></ul>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
